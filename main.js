@@ -26,8 +26,17 @@ var express = require('express'),
 			});
     });
 
-	app.get('/api/projects:id', function (req, res, next) {
+	//実装予定
+	app.delete('/api/projects/:id', function (req, res, next) {
     	var id = req.params.id;
+		res.status(200).json(id);
+		return next();
+    });
+
+	//実装予定
+	app.get('/api/projects/:id', function (req, res, next) {
+    	var id = req.params.id;
+    	console.log(id);
 		res.json(id);
 		return next();
     });
@@ -42,12 +51,15 @@ var express = require('express'),
 		return next();
     });
 
-    app.post('/api/badrequest', function (req, res, next) {
+    app.post('/api/projects', function (req, res, next) {
 		var title = req.body.title,//postの場合はbodyに入る
 		description = req.body.description,
 		url = req.body.url;
-		
-		knex('projects').inserts({//projectsに対して
+		if(title===undefined||description===undefined){//titleかdescriptionが書かれていない場合400
+			res.status(400).json('badRequest');
+			return next();
+		}
+		knex('projects').insert({//projectsに対して
 			title:title,
 			description:description,
 			url:url
