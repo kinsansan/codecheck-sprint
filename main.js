@@ -9,7 +9,7 @@ var express = require('express'),
     app.use(express.static(__dirname + '/public'))
 	
 	app.get('/api/projects', function (req, res, next) {
-    	res.json('今から実装します！！！');
+    	res.json('今から実装します!!!');
 		return next();
     });
 
