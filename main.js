@@ -80,7 +80,7 @@ var express = require('express'),
 		var title = req.body.title,//postの場合はbodyに入る
 		description = req.body.description,
 		url = req.body.url;
-		if(title===undefined||description===undefined){//titleかdescriptionが書かれていない場合400
+		if(title===undefined||title===""||description===undefined||description===""){//titleかdescriptionが書かれていない場合400
 			res.status(400).json('badRequest');
 			return next();
 		}
