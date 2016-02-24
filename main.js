@@ -26,19 +26,44 @@ var express = require('express'),
 			});
     });
 
-	//実装予定
+	//実装中
 	app.delete('/api/projects/:id', function (req, res, next) {
     	var id = req.params.id;
-		res.status(200).json(id);
-		return next();
+		console.log(id);
+		knex.select('*').from('projects').where('id',id)//*テーブルのすべての情報
+			.then(function(projects){//projectsに配列でデータが入る
+				if(projects.length==0){//値が存在しない
+					res.status(404).json('NotFound');
+					return next();
+				}
+				else{
+					res.status(200).json('OK');
+					return next();//次の処理へ
+				}
+			})
+			.catch(function (err){//エラーcatch
+				res.status(500).json(err);//サーバーエラー
+				return next();
+			});
     });
 
-	//実装予定
 	app.get('/api/projects/:id', function (req, res, next) {
     	var id = req.params.id;
-    	console.log(id);
-		res.json(id);
-		return next();
+		knex.select('*').from('projects').where('id',id)//*テーブルのすべての情報
+			.then(function(projects){//projectsに配列でデータが入る
+				if(projects.length==0){//値が存在しない
+					res.status(404).json('NotFound');
+					return next();
+				}
+				else{
+					res.json(projects);
+					return next();//次の処理へ
+				}
+			})
+			.catch(function (err){//エラーcatch
+				res.status(500).json(err);//サーバーエラー
+				return next();
+			});
     });
 
     app.get('/api/ping', function (req, res, next) {
