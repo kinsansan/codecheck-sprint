@@ -67,16 +67,7 @@ var express = require('express'),
 			});
     });
 
-    app.get('/api/ping', function (req, res, next) {
-    	res.json('PONG');
-		return next();
-    });
-
-    app.get('/api/notfound', function (req, res, next) {
-    	res.status(404).json('NotFound');
-		return next();
-    });
-
+	//データの追加
     app.post('/api/projects', function (req, res, next) {
 		var title = req.body.title,//postの場合はbodyに入る
 		description = req.body.description,
@@ -85,12 +76,12 @@ var express = require('express'),
 			res.status(400).json('badRequest');
 			return next();
 		}
-		knex('projects').insert({//projectsに対して
+		knex('projects').insert({//projectsに対して挿入
 			title:title,
 			description:description,
 			url:url
 		}).then(function (ids){
-			res.json({
+			res.status(200).json({
 				id: ids[0],
 				title: title,
 				description: description,
@@ -102,12 +93,6 @@ var express = require('express'),
 				return next();
 			});
 		});
-
-/*
-    app.listen(port, function () {
-		console.log('Server running with port', port);
-    });
-*/	
 /** 
   * Initialize database
   * this is for 'in-memory' database and should be removed
