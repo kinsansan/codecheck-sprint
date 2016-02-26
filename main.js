@@ -14,25 +14,25 @@ var express = require('express'),
     app.use(parser.json());
     app.use(express.static(__dirname + '/public'))
 	
-	app.get('/api/projects', function (req, res, next) {//projectのリストを持ってくる
-    	knex.select('*').from('projects')//*テーブルのすべての情報
-			.then(function(projects){//projectsに配列でデータが入る
-				res.json(projects);
+	//projectのリストを返す
+	app.get('/api/projects', function (req, res, next) {
+    	knex.select('*').from('projects')
+			.then(function(projects){
+				res.status(200).json(projects);//
 				return next();//次の処理へ
 			})
-			.catch(function (err){//エラーcatch
-				res.status(500).json(err);//サーバーエラー
+			.catch(function (err){
+				res.status(500).json(err);//500サーバーエラーを返す
 				return next();
 			});
     });
 
-	//実装中
+	//指定したidのデータを削除
 	app.delete('/api/projects/:id', function (req, res, next) {
     	var id = req.params.id;
-		console.log(id);
-		knex.select('*').from('projects').where('id',id)//*テーブルのすべての情報
+		knex.select('*').from('projects').where('id',id).del()//指定したidのデータを削除
 			.then(function(projects){//projectsに配列でデータが入る
-				if(projects.length==0){//値が存在しない
+				if(projects===0){//値が存在しない
 					res.status(404).json('NotFound');
 					return next();
 				}
@@ -47,9 +47,10 @@ var express = require('express'),
 			});
     });
 
+	//指定したidのデータを取得
 	app.get('/api/projects/:id', function (req, res, next) {
     	var id = req.params.id;
-		knex.select('*').from('projects').where('id',id)//*テーブルのすべての情報
+		knex.select('*').from('projects').where('id',id)
 			.then(function(projects){//projectsに配列でデータが入る
 				if(projects.length==0){//値が存在しない
 					res.status(404).json('NotFound');
@@ -107,17 +108,17 @@ var express = require('express'),
 		console.log('Server running with port', port);
     });
 */	
-/** @ToDo
+/** 
   * Initialize database
   * this is for 'in-memory' database and should be removed
   */
 var sqls = require('fs')//ファイルシステム使用
-  .readFileSync(__dirname + '/specifications/database.sql')//自分がいる場所のdatabase.sql
+  .readFileSync(__dirname + '/specifications/database.sql')//database.sqlをread
   .toString();//String変換
 
 knex.raw(sqls)//生のsql実行
-  .then(function () {//終わった時に実行、つまり読みこみ終わったら動く
-    /** @ToDo
+  .then(function () {
+    /** 
       * Run server after database initialization
       * this is for 'in-memory' database and should be removed
       */
